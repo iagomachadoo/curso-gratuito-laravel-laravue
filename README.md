@@ -1,66 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Curso gratuito laravel -laravue
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## MVC
+- M -> Model (É responsável pela comunicação com o banco de dados)
+- V -> View (É responsável por mostrar as páginas pro usuário)
+- C -> Controller (É responsável pela comunicação entre model e view e toda a lógica das regras de negócio do sistema)
 
-## About Laravel
+## Funcionamento do Laravel
+- <img src="./public/assets/imgs/conteudo/logica-de-funcionamento-laravel.webp">
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Tudo no laravel começa pela parte de **routing**. Porque é a partir de uma rota que puxamos um controller e o controller aplica a lógica criada, podendo puxar dados do banco de dados através do model e renderizar uma página a partir de uma view. De uma forma geral, esse é o **fluxo de dados** do laravel
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Comandos artisan
+- `php artisan` - lista os comandos existentes no artisan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- `php artisan route:list` - lista as rotas do sistema
 
-## Learning Laravel
+- `php artisan migrate` - sobre as migrations e cria as tabelas no banco de dados
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- `php artisan migrate --seed` - roda todas as seeds e popula o banco de dados
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- `php artisan make:controller nomeController` - cria um controller
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Programando com laravel
+- O ponto de partida do laravel são as rotas, então, devemos começar toda a escrita do código criando uma rota no arquivo de rotas. O arquivo de rotas para web é o **routes/web.php**
 
-## Laravel Sponsors
+- Nas rotas, podemos passar parâmetros que serão injetados dentro do callback
+    - `Route::get('/users/{paramA}/{paramB}', function($paramA, $paramB){})`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- Contudo, esses parâmetros são obrigatórios e a omissão de um deles irá resultar num erro e no travamento do sistema. Mas existe uma forma de contornar isso, quando não sabemos se será passado ou não um parâmetro pra a rota, podemos usar parâmetros opcionais
+    - A sintaxe para um parâmetro opcional é o uso do **?** logo após o parâmetro e no callback devemos passar um **valor default**, que na maioria dos casos é usado o **null**
+    - `Route::get('/users/{paramA?}/{paramB?}', function($paramA = null, $paramB = null){})`
 
-### Premium Partners
+- Temos a possibilidade de usar grupos de rotas, para os casos onde temos atributos compartilhados entre elas, como middleware, prefixos, controllers e outros, assim não precisamos declará-los individualmente
+    - A sintaxe para criar um grupo de rota depende do grupo, mas em linhas gerais segue o mesmo padrão, o que muda é o nome do grupo
+    - Nesse exemplo, temos um grupo de rotas que compartilham o mesmo prefixo **admin** 
+    -   ```
+        Route::prefix('admin')->group(function () {
+            Route::get('/', function(){
+                return "/admin";
+            });
+            Route::get('/{id}', function ($id) {
+                return "/admin/{$id}";
+            });
+            Route::get('/{id}/tags', function($id){
+                return "admin/{$id}/tags";
+            });
+        });
+        ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- Podemos adicionar **nomes** as rotas. Esses nomes se tornam interessantes na **montagem de links**. A partir do momento que montamos um link com o nome da rota e não a sua uri, caso essa uri venha mudar, o link não será quebrado, pois esta sendo feito a partir do nome da rota. Logo, o uso de nome nas rotas torna a manutenção e alteração do código mais fácil
+    - A sintaxe para atribuir um nome para uma rota é usando o método **name()** 
+    - `Route::get('/users/list', function(){})->name('users.list');`
 
-## Contributing
+### Model binding
+- No laravel, temos um recurso chamado **model binding** que faz a associação entre o parâmetro da rota e um model automaticamente
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Para isso, o parâmetro da rota deve ser obrigatoriamente um id e devemos fazer a injeção do model na rota ou controller. Assim, quando acessamos a rota e passamos o parâmetro, o laravel já faz automaticamente a busca e retorna o modelo correspondente ao identificador (parâmetro) fornecido
 
-## Code of Conduct
+- Sintaxe
+    - Nesse caso, ao passarmos um valor para o parâmetro da rota, o laravel já vai fazer a busca do modelo no banco de dados correspondente a esse parâmetro e injetara os resultado dentro da rota
+    - Por exemplo, se passarmos 1 como parâmetro, o laravel vai retornar os dados do usuário com id 1
+    -   ```
+        //O parâmetro da rota deve ter o mesmo nome que o parâmetro passado no callback ou controller
+        Route::get('user/{user}', function(User $user){
+            return $user;
+        });
+        ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Contudo, o model binding por padrão associa o parâmetro passado ao id do registro, mas se quisermos procurar por outra coluna e não o id. Para isso podemos usar **:** na frente do parâmetro seguido pelo **nome da coluna**
+    - Agora, a pesquisa no banco de dados será feita na coluna name e não id
+    -   ```
+        Route::get('user/{user:name}', function(User $user){
+            return $user;
+        });
+        ```
 
-## Security Vulnerabilities
+### Camada de Request
+- No Laravel, o "Request" é uma classe que representa e encapsula os dados da solicitação HTTP recebida pelo servidor. Essa classe fornece uma interface conveniente para acessar os parâmetros, cabeçalhos, cookies, arquivos enviados e outras informações relacionadas à solicitação.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Quando uma rota é acionada no Laravel, você pode acessar o objeto "Request" no controlador ou no método de rota correspondente. O Laravel instancia automaticamente o objeto "Request" e o injeta como um parâmetro no método onde ele é necessário.
 
-## License
+- Sintaxe
+    - Nesse exemplo, está sendo retornado o método http da requisição
+    -   ```
+        Route::get('/request', function(Request $request){
+            dd($request->getMethod());
+            return 'x';
+        });
+        ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Controller
+- No Laravel, um "controller" é uma classe responsável por tratar as requisições HTTP e coordenar a lógica de negócio de um conjunto de rotas. Ele implementa as ações que processam as requisições, acessam modelos e retornam respostas apropriadas. Os controllers ajudam a manter o código organizado, separando a lógica das rotas e facilitando a reutilização. Eles são parte importante da arquitetura MVC adotada pelo Laravel.
+
+- Para ligar um controller com uma rota devemos alterar a estrutura da rota. Ao invés de passarmos um callback logo após a uri, agora passaremos um array tendo seu primeiro elemento, a classe do controller e o segundo, um método do controller que será executado quando acessarmos essa rota
+
+- Sintaxe
+    - Nesse exemplo, quando acessarmos a rota **/users**, ela irá chamar o controller **UserController** e executará o método **index** existente dentro desse controller
+    -   ```
+        Route::controller(UserController::class)->group(function(){
+            Route::get('/users', 'index')->name('users.index');
+            Route::get('/users/{user}', 'show')->name('users.show');
+        });
+        ```
+
+### Views - Blade Templates
+- A camada de **view** do laravel é responsável por gerar as páginas que serão mostradas pro usuário
+
+- Os arquivos de views ficam dentro da pasta **resources/views**
+
+- Para podermos usar a engenharia do blade template, precisamos criar os arquivos de view com a extensão **.blade.php**. Se criarmos apenas com **.php**, vai funcionar, mas não podermos usar todas as vantagens do blade template, como seus helpers
+
+- Para renderizarmos uma **view**, devemos usar o método **view()** com o nome da view sem a extensão. Caso a view esteja dentro de um subdiretorio, podemos usar a notação de . para navegarmos até a view
+    -   ```
+        //A view está na raiz da pasta /views
+        public function index(){
+            return view('index');
+        }
+
+        //A view esta dentro de views/users/show.blade.php
+        public function show(User $user){
+            return view('users.show', compact('user'));
+        }
+        ```
