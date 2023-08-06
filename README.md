@@ -122,3 +122,12 @@
             return view('users.show', compact('user'));
         }
         ```
+
+## Injetando Assets
+- O laravel nos disponibiliza a diretiva **asset()** que resolve o caminho dos assets até a pasta public, ou seja, quando usamos essa diretiva, já temos o caminho criado até **url/public/**
+
+- Contudo, caso tenhamos esses **assets em uma cdn**, por exemplo, podemos usar a diretiva **assets** da mesma forma, a única mudança, é que **devemos adicionar uma variável de ambiente no arquivo .env** chamada **APP_URL** com a url da cdn, assim, a diretiva asset passará a usar essa nova url como caminho.
+
+- Caso queiramos **usar arquivos css/js específicos em algumas páginas**, mas que **não precisem serem carregados em todas as outras**, o laravel nos disponibiliza a diretiva **stack()**. **Essa diretiva serve para empilhar os arquivos**. Então, no layout base, devemos usar essa diretiva. Já na página que vamos usar os arquivos css/js, devemos usar a diretiva **push()** para puxar os arquivos da diretiva stack. Lembrando que ambos devem ter o mesmo nome
+
+- Mas esses arquivos serão inseridos na ordem que forem chamados, mas podemos usar a diretiva **prepend()** para jogarmos um arquivo para o topo da pilha. Essa diretiva substitui o push

@@ -5,17 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Curso Laravel | @yield('title', 'HOME')</title>
-    <style>
-        nav > ul{
-            list-style-type: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0 40px;
-            padding: 20px 40px;
-            background: #eee;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
 </head>
 <body>
     @section('nav')
@@ -34,5 +24,9 @@
 
     @yield('content')
 
+    <script src="{{asset('assets/js/script.js')}}"></script>
+
+    @stack('script-user')
+    
 </body>
 </html>

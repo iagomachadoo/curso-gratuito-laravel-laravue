@@ -1,0 +1,13 @@
+body{
+    background: #ffff95;
+}
+
+nav > ul{
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0 40px;
+    padding: 20px 40px;
+    background: #fff;
+}

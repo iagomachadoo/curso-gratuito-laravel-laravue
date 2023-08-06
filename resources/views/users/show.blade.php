@@ -27,3 +27,14 @@
 
 @endsection
 
+@push('script-user')
+    <script src="{{asset('assets/js/user.js')}}"></script>
+@endpush
+
+@prepend('script-user')
+
+    <script>
+        let text = "olá mundo!";
+    </script>
+    
+@endprepend
